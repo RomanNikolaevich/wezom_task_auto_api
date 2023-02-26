@@ -10,15 +10,15 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      */
-    protected function schedule(Schedule $schedule): void
+    protected function schedule(Schedule $schedule):void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('updateCarsInfo')->monthlyOn(1, '03:00');
     }
 
     /**
      * Register the commands for the application.
      */
-    protected function commands(): void
+    protected function commands():void
     {
         $this->load(__DIR__.'/Commands');
 
