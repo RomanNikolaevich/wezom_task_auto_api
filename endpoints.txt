@@ -1,0 +1,33 @@
+Show all stolen cars
+GET: http://localhost/api/v1/
+
+Show all stolen cars with parameters (filtered):
+GET: http://localhost/api/v1/cars
+Example request with pagination and filters:
+http://localhost/api/v1//cars?search=ABC&make=Toyota&model=Corolla&model_year=2020&sort=-model_year
+
+Output of all stolen cars to xlsx file:
+GET: http://localhost/api/v1/cars/{export}
+Example request with pagination and filters:
+http://localhost/api/v1//cars?search=ABC&make=Toyota&model=Corolla&model_year=2020&sort=-model_year&export
+
+Adding new stolen cars (parameters are passed via 'form-data'):
+POST: http://localhost/api/v1/cars
+
+Updating information on stolen cars (parameters are passed via 'form-data'):
+PUT: http://localhost/api/v1/cars/{vin}
+Example:
+http://localhost/api/v1/cars/1FMCU9J94FUA44289
+
+Deleting the selected data in the database:
+DELETE http://localhost/api/v1/cars/{vin}
+Example:
+http://localhost/api/v1/cars/1FMCU9J94FUA44289
+
+Autocomplete make (brand) and display all models of this make
+GET: http://localhost/api/v1/car-models-by-make/{makeName}
+Example:
+http://localhost/api/v1/car-models-by-make/audi
+
+Command to update database makes/models from terminal:
+sail artisan updateCarsInfo
