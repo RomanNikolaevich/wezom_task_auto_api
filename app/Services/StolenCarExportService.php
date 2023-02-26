@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Services;
+
+use App\Http\Requests\StolenCarRequest;
+use Illuminate\Http\JsonResponse;
+use PhpOffice\PhpSpreadsheet\Exception;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+class StolenCarExportService
+{
+    /**
+     * Create a new table and save it to the storage/app folder
+     * and display the link to the user
+     *
+     * @param StolenCarRequest $request
+     *
+     * @return JsonResponse
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function writeFiltered(StolenCarRequest $request):JsonResponse
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $worksheet->mergeCells("A1:G1");
+        $worksheet->setCellValue("A1", 'Sorted stolen car');
+
+        $header = ['Name', 'Number', 'Color', 'VIN', 'Make', 'Model', 'Model Year'];
+        $columnIndex = 2;
+        $letter = 'A';
+
+        foreach ($header as $columnName) {
+            $worksheet->setCellValue($letter++.$columnIndex, $columnName);
+        }
+
+        $stolenCars = app(StolenCarService::class)->indexFiltered($request->all());
+
+        $highestRow = $worksheet->getHighestRow() + 1;
+
+        foreach ($stolenCars as $stolenCar) {
+            $worksheet->setCellValue('A'.$highestRow, "{$stolenCar['name']}");
+            $worksheet->setCellValue('B'.$highestRow, "{$stolenCar['number']}");
+            $worksheet->setCellValue('C'.$highestRow, "{$stolenCar['color']}");
+            $worksheet->setCellValue('D'.$highestRow, "{$stolenCar['vin']}");
+            $worksheet->setCellValue('E'.$highestRow, "{$stolenCar['make']}");
+            $worksheet->setCellValue('F'.$highestRow, "{$stolenCar['model']}");
+            $worksheet->setCellValue('G'.$highestRow, "{$stolenCar['model_year']}");
+
+            $highestRow++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'stolen_cars_'.date('Ymd_His').'.xlsx';
+        $writer->save(storage_path('app/'.$filename));
+
+        return response()->json(['message' => 'Stolen car list '.$filename.' save successfully']);
+    }
+
+}
