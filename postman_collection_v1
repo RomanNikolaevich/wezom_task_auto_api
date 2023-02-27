@@ -1,0 +1,269 @@
+{
+	"info": {
+		"_postman_id": "c58fa9cd-7e78-42cd-af2e-32c71a03ce1b",
+		"name": "wezom_task_auto_api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24819013"
+	},
+	"item": [
+		{
+			"name": "StolenCar",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/api/v1/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "index filtered",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/api/v1/cars?sort=-model_year&make=FORD",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cars"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Бендер",
+									"disabled": true
+								},
+								{
+									"key": "model",
+									"value": "Jetta",
+									"disabled": true
+								},
+								{
+									"key": "model_year",
+									"value": "2013",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "-model_year"
+								},
+								{
+									"key": "make",
+									"value": "FORD"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "index filtered export",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/api/v1/cars?make=FORD&sort=-model_year&export",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cars"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Бендер",
+									"disabled": true
+								},
+								{
+									"key": "model",
+									"value": "Jetta",
+									"disabled": true
+								},
+								{
+									"key": "model_year",
+									"value": "2013",
+									"disabled": true
+								},
+								{
+									"key": "make",
+									"value": "FORD"
+								},
+								{
+									"key": "sort",
+									"value": "-model_year"
+								},
+								{
+									"key": "export",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Байден Сергій",
+									"type": "text"
+								},
+								{
+									"key": "number",
+									"value": "AA8999EE",
+									"type": "text"
+								},
+								{
+									"key": "color",
+									"value": "зелений",
+									"type": "text"
+								},
+								{
+									"key": "vin",
+									"value": "5NPE24AFXFH183476",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost/api/v1/cars?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cars"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "_method",
+									"value": "PUT",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Бендер Андрій",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost/api/v1/cars/1FMCU9J94FUA44289",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cars",
+								"1FMCU9J94FUA44289"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/api/v1/cars/1FMCU9J94FUA44289",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cars",
+								"1FMCU9J94FUA44289"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MakeToModel",
+			"item": [
+				{
+					"name": "Make to Model",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
