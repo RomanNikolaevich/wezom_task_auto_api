@@ -16,11 +16,11 @@ class StolenCarExportService
      *
      * @param StolenCarRequest $request
      *
-     * @return JsonResponse
+     * @return string
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function writeFiltered(StolenCarRequest $request):JsonResponse
+    public function writeFiltered(StolenCarRequest $request):string
     {
         $spreadsheet = new Spreadsheet();
 
@@ -54,10 +54,10 @@ class StolenCarExportService
         }
 
         $writer = new Xlsx($spreadsheet);
-        $filename = 'stolen_cars_'.date('Ymd_His').'.xlsx';
+        $filename = 'stolen_cars_'.date('Ymd_His').'_'.rand().'.xlsx';
         $writer->save(storage_path('app/'.$filename));
 
-        return response()->json(['message' => 'Stolen car list '.$filename.' save successfully']);
+        return $filename;
     }
 
 }
