@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Controllers\API\V1\CarModelsController;
 use App\Models\CarMake;
 use Illuminate\Http\JsonResponse;
 
@@ -26,7 +25,7 @@ class CarMakesService
                 'make_name' => $result['Make_Name'],
             ]);
 
-            app(CarModelsController::class)->updateModels($result['Make_ID']);
+            app(CarModelsService::class)->updateModels($result['Make_ID']);
         }
 
         return response()->json(['message' => 'Makes updated successfully']);
