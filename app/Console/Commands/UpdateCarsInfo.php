@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\API\V1\CarMakesController;
-use App\Http\Controllers\API\V1\CarModelsController;
+use App\Services\CarMakesService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class UpdateCarsInfo extends Command
 {
@@ -24,10 +24,14 @@ class UpdateCarsInfo extends Command
 
     /**
      * Execute the console command.
+     * Clear the cache for all car models
      */
     public function handle(): void
     {
-        app(CarMakesController::class)->updateMakes();
+        app(CarMakesService::class)->updateMakes();
+
+        Cache::forget('car_models_*');
+
 
     }
 }

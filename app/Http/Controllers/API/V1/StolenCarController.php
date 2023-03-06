@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Exceptions\ApiResponseException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StolenCarRequest;
-use App\Models\StolenCar;
-use App\Services\StolenCarExportService;
+use App\Services\StolenCarExcelExportService;
 use App\Services\StolenCarService;
 use Illuminate\Http\JsonResponse;
 
@@ -19,31 +19,13 @@ class StolenCarController extends Controller
     }
 
     /**
-     * used to get a list of all cars that have been stolen;
-     *
-     * @return JsonResponse
-     */
-    public function index():JsonResponse
-    {
-        $stolenCars = StolenCar::all();
-
-        if ($stolenCars->isEmpty()) {
-            return response()->json(['message' => 'No stolen cars found.'], 404);
-        }
-
-        return response()->json([
-            'data' => $stolenCars,
-        ]);
-    }
-
-    /**
      * used to get a list of filtered cars that have been stolen;
      *
      * @param StolenCarRequest $request
      *
      * @return JsonResponse
      */
-    public function indexFiltered(StolenCarRequest $request):JsonResponse
+    public function index(StolenCarRequest $request):JsonResponse
     {
         $stolenCars = $this->stolenCarService->indexFiltered($request->all());
 
@@ -52,10 +34,22 @@ class StolenCarController extends Controller
         }
 
         if ($request->has('export')) {
-            return app(StolenCarExportService::class)->writeFiltered($request);
+            $filename = app(StolenCarExcelExportService::class)
+                ->export(collect($stolenCars->items()));
+
+            if (empty($filename)) {
+                return response()->json([
+                    'message' => 'Stolen car list don\'t saved successfully',
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'Stolen car list '.$filename.' saved successfully',
+                'url'     => asset('storage/app/'.$filename),
+            ]);
         }
 
-        return response()->json($stolenCars);
+        return response()->json(['data' => $stolenCars]);
     }
 
     /**
@@ -67,12 +61,16 @@ class StolenCarController extends Controller
      */
     public function store(StolenCarRequest $request):JsonResponse
     {
-        $stolenCar = $this->stolenCarService->store($request->validated());
+        try {
+            $stolenCar = $this->stolenCarService->store($request->validated());
 
-        return response()->json([
-            'message' => 'Stolen car added successfully',
-            'data'    => $stolenCar,
-        ], 201);
+            return response()->json([
+                'message' => 'Stolen car added successfully',
+                'data'    => $stolenCar,
+            ], 201);
+        } catch (ApiResponseException $e) {
+            return response()->json(['message' => $e->getErrorMessage()], $e->getStatusCode());
+        }
     }
 
     /**
@@ -117,6 +115,13 @@ class StolenCarController extends Controller
             ], 404);
         }
         $stolenCar = $this->stolenCarService->findStolenCarByVin($vin);
+
+        if (empty($stolenCar)) {
+            return response()->json([
+                'message' => 'Vin code stolen car not found',
+            ], 404);
+        }
+
         $stolenCar->delete();
 
         return response()->json([

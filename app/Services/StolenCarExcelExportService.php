@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Http\Requests\StolenCarRequest;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class StolenCarExportService
+class StolenCarExcelExportService
 {
     /**
      * Create a new table and save it to the storage/app folder
@@ -16,11 +16,11 @@ class StolenCarExportService
      *
      * @param StolenCarRequest $request
      *
-     * @return JsonResponse
+     * @return string
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function writeFiltered(StolenCarRequest $request):JsonResponse
+    public function export(Collection $stolenCars):string
     {
         $spreadsheet = new Spreadsheet();
 
@@ -37,8 +37,6 @@ class StolenCarExportService
             $worksheet->setCellValue($letter++.$columnIndex, $columnName);
         }
 
-        $stolenCars = app(StolenCarService::class)->indexFiltered($request->all());
-
         $highestRow = $worksheet->getHighestRow() + 1;
 
         foreach ($stolenCars as $stolenCar) {
@@ -54,10 +52,10 @@ class StolenCarExportService
         }
 
         $writer = new Xlsx($spreadsheet);
-        $filename = 'stolen_cars_'.date('Ymd_His').'.xlsx';
+        $filename = 'stolen_cars_'.date('Ymd_His').'_'.rand().'.xlsx';
         $writer->save(storage_path('app/'.$filename));
 
-        return response()->json(['message' => 'Stolen car list '.$filename.' save successfully']);
+        return asset('storage/app/'.$filename);
     }
 
 }

@@ -2,10 +2,27 @@
 
 namespace App\Services;
 
+use Illuminate\Config\Repository;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Http;
 
 class DataFromApiNhtsaService
 {
+    /**
+     * @var Repository|Application|mixed
+     */
+    private mixed $link;
+    /**
+     * @var Repository|Application|mixed
+     */
+    private mixed $format;
+
+    public function __construct()
+    {
+        $this->link = config('link.api_url');
+        $this->format = config('link.format');
+    }
+
     /**
      * Get All Makes
      *
@@ -13,7 +30,7 @@ class DataFromApiNhtsaService
      */
     public function getMakes():mixed
     {
-        $url = 'https://vpic.nhtsa.dot.gov/api/vehicles/getallmakes?format=json';
+        $url = $this->link.'getallmakes'.$this->format;
 
         return Http::get($url)->json();
     }
@@ -27,7 +44,7 @@ class DataFromApiNhtsaService
      */
     public function getModels(int $makeId):mixed
     {
-        $url = 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformakeid/'.$makeId.'?format=json';
+        $url = $this->link.'getmodelsformakeid/'.$makeId.$this->format;
 
         return Http::get($url)->json();
     }
@@ -41,7 +58,7 @@ class DataFromApiNhtsaService
      */
     public function getCarInfo(string $vin):mixed
     {
-        $url = 'https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/'.$vin.'?format=json';
+        $url = $this->link.'decodevinvalues/'.$vin.$this->format;
 
         return Http::get($url)->json();
     }

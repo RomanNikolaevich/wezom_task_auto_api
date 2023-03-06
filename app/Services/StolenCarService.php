@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ApiResponseException;
 use App\Http\Requests\StolenCarRequest;
 use App\Models\StolenCar;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -60,6 +61,7 @@ class StolenCarService
      * @param StolenCarRequest $request
      *
      * @return StolenCar
+     * @throws ApiResponseException
      */
     public function store(array $request):StolenCar
     {
@@ -75,10 +77,6 @@ class StolenCarService
             'model_year' => $carInfo['model_year'],
         ];
 
-        if (empty($carInfo)) {
-            throw new \InvalidArgumentException('Invalid request data');
-        }
-
         return StolenCar::create($data);
     }
 
@@ -89,7 +87,7 @@ class StolenCarService
      */
     public function findStolenCarByVin(string $vin):StolenCar
     {
-        return StolenCar::where('vin', $vin)->firstOrFail();
+        return StolenCar::where('vin', $vin)->first();
     }
 
     /**
@@ -110,13 +108,14 @@ class StolenCarService
      * @param string $vin
      *
      * @return array
+     * @throws ApiResponseException
      */
     private function getCarInfo(string $vin):array
     {
         $response = app(DataFromApiNhtsaService::class)->getCarInfo($vin);
 
-        if (!$response) {
-            return ['message' => 'Failed to get Decode VIN'];
+        if (empty($response)) {
+            throw new ApiResponseException('Failed to get Decode VIN', 404);
         }
 
         $make = $response['Results'][0]['Make'];
