@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Exceptions\ApiResponseException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StolenCarRequest;
-use App\Services\StolenCarExportService;
+use App\Services\StolenCarExcelExportService;
 use App\Services\StolenCarService;
 use Illuminate\Http\JsonResponse;
 
@@ -34,7 +34,8 @@ class StolenCarController extends Controller
         }
 
         if ($request->has('export')) {
-            $filename = app(StolenCarExportService::class)->writeFiltered($request);
+            $filename = app(StolenCarExcelExportService::class)
+                ->export(collect($stolenCars->items()));
 
             if (empty($filename)) {
                 return response()->json([
